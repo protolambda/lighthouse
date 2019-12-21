@@ -3,5 +3,5 @@ COPY . lighthouse
 RUN cd lighthouse && make && cargo clean
 
 FROM debian:buster-slim
-RUN apt-get update && apt-get install -y libssl-dev
+RUN apt-get update && apt-get install -y libssl-dev ca-certificates
 COPY --from=builder /usr/local/cargo/bin/lighthouse /usr/local/bin/lighthouse
