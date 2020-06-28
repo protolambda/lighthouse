@@ -28,10 +28,10 @@ fn main() {
 }
 
 pub fn get_all_files() -> Result<(), String> {
-    get_file("boot_enr.yaml")?;
-    get_file("config.yaml")?;
-    get_file("deploy_block.txt")?;
-    get_file("deposit_contract.txt")?;
+    get_file("https://raw.githubusercontent.com/sigp/witti/a48ea2d68a87db93aa7fd482461418496ed4347d/altona/lighthouse/boot_enr.yaml","boot_enr.yaml")?;
+    get_file("https://raw.githubusercontent.com/eth2-clients/eth2-testnets/master/shared/altona/config.yaml", "config.yaml")?;
+    get_file("https://raw.githubusercontent.com/sigp/witti/a48ea2d68a87db93aa7fd482461418496ed4347d/altona/lighthouse/deploy_block.txt","deploy_block.txt")?;
+    get_file("https://raw.githubusercontent.com/sigp/witti/a48ea2d68a87db93aa7fd482461418496ed4347d/altona/lighthouse/deposit_contract.txt","deposit_contract.txt")?;
     // TODO: add once we know the genesis state for Altona.
     //
     // get_file("genesis.ssz")?;
@@ -39,12 +39,7 @@ pub fn get_all_files() -> Result<(), String> {
     Ok(())
 }
 
-pub fn get_file(filename: &str) -> Result<(), String> {
-    let url = format!(
-        "https://raw.githubusercontent.com/sigp/witti/a48ea2d68a87db93aa7fd482461418496ed4347d/altona/lighthouse/{}",
-        filename
-    );
-
+pub fn get_file(url: &str, filename: &str) -> Result<(), String> {
     let path = base_dir().join(filename);
     let mut file =
         File::create(path).map_err(|e| format!("Failed to create {}: {:?}", filename, e))?;
@@ -52,7 +47,7 @@ pub fn get_file(filename: &str) -> Result<(), String> {
     let request = reqwest::blocking::Client::builder()
         .build()
         .map_err(|_| "Could not build request client".to_string())?
-        .get(&url)
+        .get(url)
         .timeout(std::time::Duration::from_secs(120));
 
     let contents = request
